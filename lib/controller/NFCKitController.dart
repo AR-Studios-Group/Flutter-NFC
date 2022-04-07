@@ -10,11 +10,17 @@ class NFCKitController extends GetxController {
 
   void checkNFC() async {
     var availability = await FlutterNfcKit.nfcAvailability;
-    isAvailable.value =
-        availability == NFCAvailability.available ? true : false;
+    isAvailable.value = availability == NFCAvailability.available;
+  }
+
+  void stopNFC() async {
+    await FlutterNfcKit.finish();
+    await FlutterNfcKit.finish(iosAlertMessage: "Success");
+    await FlutterNfcKit.finish(iosErrorMessage: "Failed");
   }
 
   Future<bool> startNFCSession() async {
+    var result = false;
     try {
       var tag = await FlutterNfcKit.poll(
           timeout: const Duration(seconds: 10),
@@ -26,23 +32,15 @@ class NFCKitController extends GetxController {
       if (tag.ndefAvailable) {
         for (var record in await FlutterNfcKit.readNDEFRecords(cached: false)) {
           print(record.toString());
-          FlutterNfcKit.finish();
-          if (record.toString() == VAILD_RECORD) {
-            return true;
-          } else {
-            return false;
-          }
+          if (record.toString() == VAILD_RECORD) result = true;
         }
-        return false;
-      } else {
-        FlutterNfcKit.finish();
-        return false;
       }
     } catch (err) {
       print(err);
-      FlutterNfcKit.finish();
-      return false;
     }
+
+    stopNFC();
+    return result;
   }
 
   @override
