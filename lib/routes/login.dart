@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:get/get.dart';
 
+import '../controller/NFCController.dart';
 import '../controller/NFCKitController.dart';
 import 'authenticated.dart';
 

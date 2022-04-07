@@ -1,3 +1,4 @@
+import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:get/get.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 
@@ -15,23 +16,20 @@ class NFCController extends GetxController {
   void startNFCSession() async {
     print("starting");
 
-    if (isAvailable.value) {
-      NfcManager.instance.startSession(
-          alertMessage: "iOS Message",
-          onDiscovered: (NfcTag tag) async {
-            print('tag');
-          },
-          onError: (err) async {
-            print(err);
-          });
-    } else {
-      print("NFC Not supported");
-    }
+    NfcManager.instance.startSession(
+        alertMessage: "iOS Alert Message",
+        onDiscovered: (tag) async {
+          print(tag);
+          NfcManager.instance.stopSession();
+        },
+        onError: (err) async {
+          print(err.message);
+        });
   }
 
   @override
   void onInit() {
-    checkNFC();
     super.onInit();
+    checkNFC();
   }
 }
