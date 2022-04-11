@@ -27,6 +27,7 @@ class _LoginState extends State<Login> {
           children: [
             Obx(() => Text('NFC Status: ${nfcController.isAvailable}')),
             const SizedBox(height: 20),
+            Obx(() => Text('Is Reading: ${nfcController.isReading}')),
             TextButton(
                 onPressed: () async {
                   var res = await nfcController.startNFCSession();

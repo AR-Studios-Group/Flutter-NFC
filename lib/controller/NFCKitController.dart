@@ -1,12 +1,12 @@
 import 'package:get/get.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:ndef/ndef.dart' as ndef;
-import 'package:nfc_manager/nfc_manager.dart';
 
 class NFCKitController extends GetxController {
   static const VAILD_ID = "E004010080205B83";
 
   var isAvailable = false.obs;
+  var isReading = false.obs;
 
   void checkNFC() async {
     var availability = await FlutterNfcKit.nfcAvailability;
@@ -20,6 +20,7 @@ class NFCKitController extends GetxController {
   }
 
   Future<bool> startNFCSession() async {
+    isReading.value = true;
     var result = false;
     try {
       var tag = await FlutterNfcKit.poll(
@@ -27,11 +28,15 @@ class NFCKitController extends GetxController {
           iosMultipleTagMessage: "Multiple tags found!",
           iosAlertMessage: "Scan your tag");
 
-      if (tag.id == VAILD_ID) result = true;
+      print('**** FOUND ****');
+      if (tag.id == VAILD_ID) {
+        result = true;
+      }
     } catch (err) {
       print(err);
     }
     stopNFC();
+    isReading.value = false;
     return result;
   }
 
